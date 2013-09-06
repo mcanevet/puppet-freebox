@@ -13,4 +13,5 @@ class freebox(
     $app_version,
     $device_name),
 ) {
+  notice("app_token is ${app_token}")
 }
