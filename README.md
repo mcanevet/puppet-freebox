@@ -20,8 +20,7 @@ Then got to your Freebox OS interface (http://mafreebox.free.fr) to allow `Freeb
 Usage
 -----
 
-Define app_token for all classes
-================================
+**Define app_token for all classes:**
 
 Just declare the `freebox` class with `app_token` parameter:
 
@@ -29,8 +28,7 @@ Just declare the `freebox` class with `app_token` parameter:
       app_token => 'dyNYgfK0Ya6FWGqq83sBHa7TwzWo+pg4fDFUJHShcjVYzTfaRrZzm93p7OTAfH/0',
     }
 
-Configure DHCP
-==============
+**Configure DHCP**
 
     class { 'freebox::dhcp':
       enabled        => true,
@@ -54,6 +52,11 @@ Functions:
 
 * [freebox\_app\_token](#function-freeboxapptoken)
 * [freebox\_session\_token](#function-freeboxsessiontoken)
+
+Types:
+
+* [freebox\_conf](#type-freeboxconf)
+* [freebox\_dhcp\_lease](#type-freeboxdhcplease)
 
 ###Class: freebox
 This class is used to set the main settings for this module, to be used by the other classes and defined resources. On its own it does nothing.
@@ -109,3 +112,20 @@ Gateway subnet netmask.
 ####`sticky_assign`
 Always assign the same IP to a given host.
 
+####`leases`
+Hash containing leases to declare.
+
+###Resource: dhcp::lease
+This resource is used to declare a DHCP static lease.
+
+####`ip`
+IPv4 to assign to the host.
+
+####`mac`
+Host mac address. Defaults to `name`.
+
+####`comment`
+an optional comment.
+
+####`hostname`
+hostname matching the mac address.
