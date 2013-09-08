@@ -22,6 +22,22 @@ Puppet::Type.type(:freebox_conf).provide(:rest) do
   end
 
   def request=(value)
+    puts "In request="
+    puts "value = #{value}"
+    RestClient.put(
+      "http://mafreebox.free.fr#{resource[:name]}",
+      value.to_json,
+      :content_type => :json,
+      :accept => :json,
+      :'X_Fbx_App_Auth' => resource[:session_token]
+    ) { |response, request, result, &block|
+      case response.code
+      when 200
+        response
+      else
+        response.return!(request, result, &block)
+      end
+    }
   end
 
 end

@@ -15,6 +15,8 @@ First, you have to obtain an app_token. This procedure can only be initiated fro
 
     puppet apply -e 'notice(freebox_app_token("fr.freebox.puppet","Freebox Puppet","0.0.1","raspberry"))'
 
+Then got to your Freebox OS interface (http://mafreebox.free.fr) to allow `Freebox Puppet` application to update Freebox settings (in "Paramètres de la Freebox" > "Gestion des accès" > "Applications").
+
 Usage
 -----
 
