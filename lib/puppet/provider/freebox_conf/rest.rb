@@ -7,36 +7,21 @@ end
 
 Puppet::Type.type(:freebox_conf).provide(:rest) do
 
-  def session_token
-    freebox_session_token(resource[:app_id], resource[:app_token])
-  end
-
   def request
-    JSON.parse(RestClient.get(
+    RestClient.get(
       "http://mafreebox.free.fr#{resource[:name]}",
-      resource[:request].to_json,
-      :headers => {
-        :X_Fbx_App_Auth => session_token,
-      }
-    ))
+      :'X_Fbx_App_Auth' => resource[:session_token]
+    ) { |response, request, result, &block|
+      case response.code
+      when 200
+        JSON.parse(response)['result']
+      else
+        response.return!(request, result, &block)
+      end
+    }
   end
 
   def request=(value)
-    RestClient.put(
-      "http://mafreebox.free.fr#{resource[:name]}",
-      resource[:request].to_json,
-      :headers => {
-        :X_Fbx_App_Auth => session_token,
-      }
-    )
-  end
-
-  def exists?
-    request == resource[:request]
-  end
-
-  def create
-#    request = resource[:request]
   end
 
 end
