@@ -22,8 +22,6 @@ Puppet::Type.type(:freebox_conf).provide(:rest) do
   end
 
   def request=(value)
-    puts "In request="
-    puts "value = #{value}"
     RestClient.put(
       "http://mafreebox.free.fr#{resource[:name]}",
       value.to_json,
