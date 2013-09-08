@@ -115,7 +115,7 @@ Always assign the same IP to a given host.
 ####`leases`
 Hash containing leases to declare.
 
-###Resource: dhcp::lease
+###Resource: freebox::dhcp::lease
 This resource is used to declare a DHCP static lease.
 
 ####`ip`
