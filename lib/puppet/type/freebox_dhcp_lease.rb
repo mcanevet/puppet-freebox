@@ -3,7 +3,7 @@ Puppet::Type.newtype(:freebox_dhcp_lease) do
 
   ensurable
 
-  newparam(:id, :namevar => true) do
+  newparam(:name) do
     desc "DHCP static lease object id"
     munge do |value|
       value.upcase

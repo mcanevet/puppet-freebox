@@ -1,19 +1,55 @@
 begin
   require 'rest_client'
   require 'json'
+  require 'inifile'
 rescue
   Puppet.warning "You need REST_Client and Json installed to manage Freebox OS."
 end
 
 Puppet::Type.type(:freebox_dhcp_lease).provide(:apiv1) do
 
-  def exists?
+  def self.instances
+    ini = IniFile.load('/etc/puppet/freebox.conf')
+    section = ini['mafreebox.free.fr']
+    app_token = section['app_token']
+
+    # Get challenge
+    challenge = JSON.parse(RestClient.get('http://mafreebox.free.fr/api/v1/login/'))['result']['challenge']
+    password = Digest::HMAC.hexdigest(challenge, app_token, Digest::SHA1)
+
+    # Get session_token
+    session_token = JSON.parse(
+      RestClient.post(
+        'http://mafreebox.free.fr/api/v1/login/session/',
+        {
+          :app_id   => 'fr.freebox.puppet',
+          :password => password,
+        }.to_json,
+        :content_type => :json,
+        :accept => :json
+      )
+    )['result']['session_token']
+
+    # Get leases
     JSON.parse(
       RestClient.get(
-        "http://mafreebox.free.fr/api/v1/dhcp/static_lease/#{resource[:id]}",
-        :'X_Fbx_App_Auth' => resource[:session_token]
+        'http://mafreebox.free.fr/api/v1/dhcp/static_lease/',
+        :'X_Fbx_App_Auth' => session_token
       )
-    )['success']
+    )['result'].collect do |lease|
+      # initialize @property_hash
+      new( :name  => lease['id'],
+        :ensure   => :present,
+        :mac      => lease['mac'],
+        :comment  => lease['comment'],
+        :hostname => lease['hostname'],
+        :ip       => lease['ip'],
+      )
+    end
+  end
+
+  def exists?
+    @property_hash[:ensure] == :present
   end
 
   def create
@@ -29,17 +65,8 @@ Puppet::Type.type(:freebox_dhcp_lease).provide(:apiv1) do
     )
   end
 
-  def id
-    resource[:id]
-  end
-
   def mac
-    JSON.parse(
-      RestClient.get(
-        "http://mafreebox.free.fr/api/v1/dhcp/static_lease/#{resource[:id]}",
-        :'X_Fbx_App_Auth' => resource[:session_token]
-      )
-    )['result']['mac']
+    @property_hash[:mac]
   end
 
   def mac=(value)
@@ -53,12 +80,7 @@ Puppet::Type.type(:freebox_dhcp_lease).provide(:apiv1) do
   end
 
   def comment
-    JSON.parse(
-      RestClient.get(
-        "http://mafreebox.free.fr/api/v1/dhcp/static_lease/#{resource[:id]}",
-        :'X_Fbx_App_Auth' => resource[:session_token]
-      )
-    )['result']['comment']
+    @property_hash[:comment]
   end
 
   def comment=(value)
@@ -72,12 +94,7 @@ Puppet::Type.type(:freebox_dhcp_lease).provide(:apiv1) do
   end
 
   def hostname
-    JSON.parse(
-      RestClient.get(
-        "http://mafreebox.free.fr/api/v1/dhcp/static_lease/#{resource[:id]}",
-        :'X_Fbx_App_Auth' => resource[:session_token]
-      )
-    )['result']['hostname']
+    @property_hash[:hostname]
   end
 
   def hostname=(value)
@@ -91,12 +108,7 @@ Puppet::Type.type(:freebox_dhcp_lease).provide(:apiv1) do
   end
 
   def ip
-    JSON.parse(
-      RestClient.get(
-        "http://mafreebox.free.fr/api/v1/dhcp/static_lease/#{resource[:id]}",
-        :'X_Fbx_App_Auth' => resource[:session_token]
-      )
-    )['result']['ip']
+    @property_hash[:ip]
   end
 
   def ip=(value)
