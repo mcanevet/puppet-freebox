@@ -71,7 +71,7 @@ Puppet::Type.type(:freebox_dhcp_lease).provide(:apiv1) do
 
   def mac=(value)
     RestClient.put(
-      "http://mafreebox.free.fr/api/v1/dhcp/static_lease/#{resource[:id]}",
+      "http://mafreebox.free.fr/api/v1/dhcp/static_lease/#{resource[:name]}",
       {
         :mac => resource[:mac],
       }.to_json,
@@ -85,7 +85,7 @@ Puppet::Type.type(:freebox_dhcp_lease).provide(:apiv1) do
 
   def comment=(value)
     RestClient.put(
-      "http://mafreebox.free.fr/api/v1/dhcp/static_lease/#{resource[:id]}",
+      "http://mafreebox.free.fr/api/v1/dhcp/static_lease/#{resource[:name]}",
       {
         :comment => resource[:comment],
       }.to_json,
@@ -99,7 +99,7 @@ Puppet::Type.type(:freebox_dhcp_lease).provide(:apiv1) do
 
   def hostname=(value)
     RestClient.put(
-      "http://mafreebox.free.fr/api/v1/dhcp/static_lease/#{resource[:id]}",
+      "http://mafreebox.free.fr/api/v1/dhcp/static_lease/#{resource[:name]}",
       {
         :hostname => resource[:hostname],
       }.to_json,
@@ -113,7 +113,7 @@ Puppet::Type.type(:freebox_dhcp_lease).provide(:apiv1) do
 
   def ip=(value)
     RestClient.put(
-      "http://mafreebox.free.fr/api/v1/dhcp/static_lease/#{resource[:id]}",
+      "http://mafreebox.free.fr/api/v1/dhcp/static_lease/#{resource[:name]}",
       {
         :ip => resource[:ip],
       }.to_json,
