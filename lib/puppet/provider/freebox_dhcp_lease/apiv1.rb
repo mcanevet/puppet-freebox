@@ -48,6 +48,15 @@ Puppet::Type.type(:freebox_dhcp_lease).provide(:apiv1) do
     end
   end
 
+  def self.prefetch(resources)
+    dhcp_leases = instances
+    resources.keys.each do |name|
+      if provider = dhcp_leases.find{ |dhcp_lease| dhcp_lease.name == name }
+        resources[name].provider = provider
+      end
+    end
+  end
+
   def exists?
     @property_hash[:ensure] == :present
   end
