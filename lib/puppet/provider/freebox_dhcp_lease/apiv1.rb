@@ -43,7 +43,7 @@ Puppet::Type.type(:freebox_dhcp_lease).provide(:apiv1) do
         :mac      => lease['mac'],
         :comment  => lease['comment'],
         :hostname => lease['hostname'],
-        :ip       => lease['ip'],
+        :ip       => lease['ip']
       )
     end
   end
