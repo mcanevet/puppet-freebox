@@ -106,18 +106,17 @@ Puppet::Type.type(:freebox_dhcp_lease).provide(:apiv1) do
     )
   end
 
+  def initialize(value={})
+    super(value)
+    @property_flush = {}
+  end
+
   def mac
     @property_hash[:mac]
   end
 
   def mac=(value)
-    RestClient.put(
-      "http://mafreebox.free.fr/api/v1/dhcp/static_lease/#{resource[:name]}",
-      {
-        :mac => resource[:mac],
-      }.to_json,
-      :'X_Fbx_App_Auth' => self.session_token
-    )
+    @property_flush[:mac] = value
   end
 
   def comment
@@ -125,13 +124,7 @@ Puppet::Type.type(:freebox_dhcp_lease).provide(:apiv1) do
   end
 
   def comment=(value)
-    RestClient.put(
-      "http://mafreebox.free.fr/api/v1/dhcp/static_lease/#{resource[:name]}",
-      {
-        :comment => resource[:comment],
-      }.to_json,
-      :'X_Fbx_App_Auth' => self.session_token
-    )
+    @property_flush[:comment] = value
   end
 
   def hostname
@@ -139,13 +132,7 @@ Puppet::Type.type(:freebox_dhcp_lease).provide(:apiv1) do
   end
 
   def hostname=(value)
-    RestClient.put(
-      "http://mafreebox.free.fr/api/v1/dhcp/static_lease/#{resource[:name]}",
-      {
-        :hostname => resource[:hostname],
-      }.to_json,
-      :'X_Fbx_App_Auth' => self.session_token
-    )
+    @property_flush[:hostname] = value
   end
 
   def ip
@@ -153,13 +140,26 @@ Puppet::Type.type(:freebox_dhcp_lease).provide(:apiv1) do
   end
 
   def ip=(value)
-    RestClient.put(
-      "http://mafreebox.free.fr/api/v1/dhcp/static_lease/#{resource[:name]}",
-      {
-        :ip => resource[:ip],
-      }.to_json,
-      :'X_Fbx_App_Auth' => self.session_token
-    )
+    @property_flush[:ip] = value
+  end
+
+  def flush
+    myHash = {}
+    if @property_flush
+      (myHash[:mac] = resource[:mac]) if @property_flush[:mac]
+      (myHash[:comment] = resource[:comment]) if @property_flush[:comment]
+      (myHash[:hostname] = resource[:hostname]) if @property_flush[:hostname]
+      (myHash[:ip] = resource[:ip]) if @property_flush[:ip]
+      puts "myHash=#{myHash}"
+      unless myHash.empty?
+        RestClient.put(
+          "http://mafreebox.free.fr/api/v1/dhcp/static_lease/#{resource[:name]}",
+          myHash.to_json,
+          :'X_Fbx_App_Auth' => self.session_token
+        )
+      end
+    end
+    @property_hash = resource.to_hash
   end
 
 end
