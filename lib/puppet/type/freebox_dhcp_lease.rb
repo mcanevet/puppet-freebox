@@ -10,10 +10,6 @@ Puppet::Type.newtype(:freebox_dhcp_lease) do
     end
   end
 
-  newparam(:session_token) do
-    desc "The session_token to use"
-  end
-
   newproperty(:mac) do
     desc "Host mac address"
     munge do |value|

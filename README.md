@@ -11,7 +11,7 @@ The Freebox OS module allows you to easily manage the Freebox Server settings in
 Pre-requirement
 ---------------
 
-First, you have to obtain an app_token. This procedure can only be initiated from the local network, and the user must have access to the Freebox front panel to grant access to the app.
+First, you have to obtain an app\_token. This procedure can only be initiated from the local network, and the user must have access to the Freebox front panel to grant access to the app.
 
     puppet apply -e 'notice(freebox_app_token("fr.freebox.puppet","Freebox Puppet","0.0.1","raspberry"))'
 
@@ -44,10 +44,6 @@ Classes:
 * [freebox](#class-freebox)
 * [freebox::dhcp](#class-freeboxdhcp)
 
-Resources:
-
-* [freebox::dhcp::lease](#resource-freeboxdhcplease)
-
 Functions:
 
 * [freebox\_app\_token](#function-freeboxapptoken)
@@ -71,13 +67,13 @@ For example, if you want to override the default `app_id` you could use the foll
 That would make the `app_token`(mandatory) and `app_id` default for all classes and defined resources in this module.
 
 ####`app_token`
-The app_token to use (see above to generate one).
+The app\_token to use (see above to generate one).
 
 ####`app_id`
-Override the default app_id (generated app_token must match the app_id). Defaults to `fr.freebox.puppet`.
+Override the default app\_id (generated app\_token must match the app\_id). Defaults to `fr.freebox.puppet`.
 
 ####`app_name`
-Override the default app_name. Defaults to `Freebox Puppet`.
+Override the default app\_name. Defaults to `Freebox Puppet`.
 
 ####`app_version`
 Override the app version.
@@ -88,7 +84,7 @@ Override the device name. Defaults to `$::hostname`.
 ###Class: freebox::dhcp
 This class is used to configure the DHCP server of the Freebox Server.
 
-####̀ always_broadcast`
+####̀`always_broadcast`
 Always broadcast DHCP responses.
 
 ####`dns`
@@ -115,7 +111,7 @@ Always assign the same IP to a given host.
 ####`leases`
 Hash containing leases to declare.
 
-###Resource: freebox::dhcp::lease
+###Type: freebox\_dhcp\_lease
 This resource is used to declare a DHCP static lease.
 
 ####`ip`

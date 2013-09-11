@@ -25,5 +25,5 @@ class freebox::dhcp(
       sticky_assign    => $sticky_assign,
     }
   }
-  create_resources(freebox::dhcp::lease, $leases)
+  create_resources(freebox_dhcp_lease, $leases)
 }
