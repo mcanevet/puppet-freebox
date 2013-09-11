@@ -65,6 +65,13 @@ Puppet::Type.type(:freebox_dhcp_lease).provide(:apiv1) do
     )
   end
 
+  def destroy
+    RestClient.delete(
+      "http://mafreebox.free.fr/api/v1/dhcp/static_lease/#{resource[:name]}",
+      :'X_Fbx_App_Auth' => resource[:session_token]
+    )
+  end
+
   def mac
     @property_hash[:mac]
   end
