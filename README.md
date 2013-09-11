@@ -78,13 +78,13 @@ Override the default app\_name. Defaults to `Freebox Puppet`.
 ####`app_version`
 Override the app version.
 
-####̀`device_name`
+####`device_name`
 Override the device name. Defaults to `$::hostname`.
 
 ###Class: freebox::dhcp
 This class is used to configure the DHCP server of the Freebox Server.
 
-####̀`always_broadcast`
+####`always_broadcast`
 Always broadcast DHCP responses.
 
 ####`dns`
