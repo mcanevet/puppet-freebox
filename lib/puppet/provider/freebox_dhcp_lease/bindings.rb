@@ -1,13 +1,20 @@
 begin
   require 'freebox_api'
+  require 'inifile'
 rescue
   Puppet.warning "You need freebox_api gem to manage Freebox OS with this provider."
 end
 
 Puppet::Type.type(:freebox_dhcp_lease).provide(:bindings) do
 
+  def self.app_token
+    ini = IniFile.load('/etc/puppet/freebox.conf')
+    section = ini['mafreebox.free.fr']
+    section['app_token']
+  end
+
   def self.instances
-    FreeboxApi::Resources::DhcpLease.instances.collect do |dhcp_lease|
+    FreeboxApi::Resources::DhcpLease.instances('fr.freebox.puppet', self.app_token).collect do |dhcp_lease|
       # initialize @property_hash
       new(
         :name     => dhcp_lease.id,
