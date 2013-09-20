@@ -14,15 +14,17 @@ Puppet::Type.type(:freebox_dhcp_lease).provide(:bindings) do
   end
 
   def self.instances
-    FreeboxApi::Resources::DhcpLease.instances('fr.freebox.puppet', self.app_token).collect do |dhcp_lease|
+    FreeboxApi.app_id = 'fr.freebox.puppet'
+    FreeboxApi.app_token = self.app_token
+    FreeboxApi::Resources::DhcpLease.instances.collect do |dhcp_lease|
       # initialize @property_hash
       new(
-        :name     => dhcp_lease.id,
+        :name     => dhcp_lease['id'],
         :ensure   => :present,
-        :mac      => dhcp_lease.mac,
-        :comment  => dhcp_lease.comment,
-        :hostname => dhcp_lease.hostname,
-        :ip       => dhcp_lease.ip
+        :mac      => dhcp_lease['mac'],
+        :comment  => dhcp_lease['comment'],
+        :hostname => dhcp_lease['hostname'],
+        :ip       => dhcp_lease['ip']
       )
     end
   end
@@ -41,11 +43,22 @@ Puppet::Type.type(:freebox_dhcp_lease).provide(:bindings) do
   end
 
   def create
-    # TODO
+    myHash = {}
+    if @property_flush
+      (myHash[:id] = resource[:name]) if @property_flush[:name]
+      (myHash[:mac] = resource[:mac]) if @property_flush[:mac]
+      (myHash[:comment] = resource[:comment]) if @property_flush[:comment]
+      (myHash[:hostname] = resource[:hostname]) if @property_flush[:hostname]
+      (myHash[:ip] = resource[:ip]) if @property_flush[:ip]
+      unless myHash.empty?
+        FreeboxApi::Resources::DhcpLease.create(myHash)
+      end
+    end
+    @property_hash = resource.to_hash
   end
 
   def destroy
-    # TODO
+    FreeboxApi::Resources::DhcpLease.destroy(resource[:name])
   end
 
   def initialize(value={})
@@ -86,7 +99,17 @@ Puppet::Type.type(:freebox_dhcp_lease).provide(:bindings) do
   end
 
   def flush
-    # TODO
+    myHash = {}
+    if @property_flush
+      (myHash[:mac] = resource[:mac]) if @property_flush[:mac]
+      (myHash[:comment] = resource[:comment]) if @property_flush[:comment]
+      (myHash[:hostname] = resource[:hostname]) if @property_flush[:hostname]
+      (myHash[:ip] = resource[:ip]) if @property_flush[:ip]
+      unless myHash.empty?
+        FreeboxApi::Resources::DhcpLease.update(myHash)
+      end
+    end
+    @property_hash = resource.to_hash
   end
 
 end
