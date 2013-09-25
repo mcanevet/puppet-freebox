@@ -44,15 +44,13 @@ Puppet::Type.type(:freebox_dhcp_lease).provide(:bindings) do
 
   def create
     myHash = {}
-    if @property_flush
-      (myHash[:id] = resource[:name]) if @property_flush[:name]
-      (myHash[:mac] = resource[:mac]) if @property_flush[:mac]
-      (myHash[:comment] = resource[:comment]) if @property_flush[:comment]
-      (myHash[:hostname] = resource[:hostname]) if @property_flush[:hostname]
-      (myHash[:ip] = resource[:ip]) if @property_flush[:ip]
-      unless myHash.empty?
-        FreeboxApi::Resources::DhcpLease.create(myHash)
-      end
+    (myHash[:id] = resource[:name]) if resource[:name]
+    (myHash[:mac] = resource[:mac]) if resource[:mac]
+    (myHash[:comment] = resource[:comment]) if resource[:comment]
+    (myHash[:hostname] = resource[:hostname]) if resource[:hostname]
+    (myHash[:ip] = resource[:ip]) if resource[:ip]
+    unless myHash.empty?
+      FreeboxApi::Resources::DhcpLease.create(myHash)
     end
     @property_hash = resource.to_hash
   end
@@ -101,6 +99,7 @@ Puppet::Type.type(:freebox_dhcp_lease).provide(:bindings) do
   def flush
     myHash = {}
     if @property_flush
+      myHash[:id] = resource[:name]
       (myHash[:mac] = resource[:mac]) if @property_flush[:mac]
       (myHash[:comment] = resource[:comment]) if @property_flush[:comment]
       (myHash[:hostname] = resource[:hostname]) if @property_flush[:hostname]
