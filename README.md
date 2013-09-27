@@ -30,7 +30,7 @@ Usage
 
 **Define app_token for all classes:**
 
-Just declare the `freebox` class with `app\_token` parameter:
+Just declare the `freebox` class with `app_token` parameter:
 
 ```puppet
 class { 'freebox':
@@ -62,33 +62,33 @@ Classes:
 * [freebox](#class-freebox)
 * [freebox::dhcp](#class-freeboxdhcp)
 
-Types:
+Resources:
 
-* [freebox\_conf](#resource-freeboxconf)
-* [freebox\_dhcp\_lease](#resource-freeboxdhcplease)
+* [freebox_conf](#resource-freeboxconf)
+* [freebox_dhcp_lease](#resource-freeboxdhcplease)
 
 ###Class: freebox
 This class is used to set the main settings for this module, to be used by the other classes and defined resources and configure connection the internet connection to the Freebox.
 
-For example, if you want to override the default `app\_id` you could use the following combination:
+For example, if you want to override the default `app_id` you could use the following combination:
 
     class { 'freebox':
       app_token => 'dyNYgfK0Ya6FWGqq83sBHa7TwzWo+pg4fDFUJHShcjVYzTfaRrZzm93p7OTAfH/0',
       app_id    => 'fr.freebox.puppetconf',
     }
 
-That would make the `app\_token`(mandatory) and `app\_id` default for all classes and defined resources in this module.
+That would make the `app_token`(mandatory) and `app_id` default for all classes and defined resources in this module.
 
-####`app\_token`
+####`app_token`
 The app\_token to use (see above to generate one).
 
-####`app\_id`
+####`app_id`
 Override the default app\_id (generated app\_token must match the app\_id). Defaults to `fr.freebox.puppet`.
 
-####`app\_name`
+####`app_name`
 Override the default app\_name. Defaults to `Freebox Puppet`.
 
-####`app\_version`
+####`app_version`
 Override the app version.
 
 ####`device\_name`
@@ -97,10 +97,10 @@ Override the device name. Defaults to `$::hostname`.
 ####`ping`
 Should the Freebox respond to external ping requests.
 
-####`remote\_access`
+####`remote_access`
 Enable/disable HTTP remote access.
 
-####`remote\_access\_port`
+####`remote_access_port`
 Port number to use for remote HTTP access.
 
 ####`wol`
@@ -109,13 +109,13 @@ Enable/disable Wake-on-lan proxy.
 ####`adblock`
 Is ads blocking feature enabled.
 
-####`allow\_token\_request`
+####`allow_token_request`
 If false, user has disabled new token request. New apps can’t request a new token. Apps that already have a token are still allowed.
 
 ###Class: freebox::dhcp
 This class is used to configure the DHCP server of the Freebox Server.
 
-####`always\_broadcast`
+####`always_broadcast`
 Always broadcast DHCP responses.
 
 ####`dns`
@@ -127,16 +127,16 @@ Enable/Disable the DHCP server.
 ####`gateway`
 Gateway IP address.
 
-####`ip\_range\_end`
+####`ip_range_end`
 DHCP range end IP.
 
-####`ip\_range\_start`
+####`ip_range_start`
 DHCP range start IP.
 
 ####`netmask`
 Gateway subnet netmask.
 
-####`sticky\_assign`
+####`sticky_assign`
 Always assign the same IP to a given host.
 
 ####`leases`
