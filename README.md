@@ -11,7 +11,7 @@ The Freebox OS module allows you to easily manage the Freebox Server settings in
 Pre-requirement
 ---------------
 
-First, you have to obtain an app\_token. This procedure can only be initiated from the local network, and the user must have access to the Freebox front panel to grant access to the app.
+First, you have to obtain an app_token. This procedure can only be initiated from the local network, and the user must have access to the Freebox front panel to grant access to the app.
 
 ```ruby
 require 'freebox_api'
@@ -61,11 +61,13 @@ Classes:
 
 * [freebox](#class-freebox)
 * [freebox::dhcp](#class-freeboxdhcp)
+* [freebox::lan] (#class-freeboxlan)
 
 Resources:
 
 * [freebox_conf](#resource-freeboxconf)
 * [freebox_dhcp_lease](#resource-freeboxdhcplease)
+* [freebox_lan_host] (#resource-freeboxlanhost)
 
 ###Class: freebox
 This class is used to set the main settings for this module, to be used by the other classes and defined resources and configure connection the internet connection to the Freebox.
@@ -80,18 +82,18 @@ For example, if you want to override the default `app_id` you could use the foll
 That would make the `app_token`(mandatory) and `app_id` default for all classes and defined resources in this module.
 
 ####`app_token`
-The app\_token to use (see above to generate one).
+The app_token to use (see above to generate one).
 
 ####`app_id`
-Override the default app\_id (generated app\_token must match the app\_id). Defaults to `fr.freebox.puppet`.
+Override the default app_id (generated app_token must match the app_id). Defaults to `fr.freebox.puppet`.
 
 ####`app_name`
-Override the default app\_name. Defaults to `Freebox Puppet`.
+Override the default app_name. Defaults to `Freebox Puppet`.
 
 ####`app_version`
 Override the app version.
 
-####`device\_name`
+####`device_name`
 Override the device name. Defaults to `$::hostname`.
 
 ####`ping`
@@ -142,7 +144,31 @@ Always assign the same IP to a given host.
 ####`leases`
 Hash containing leases to declare.
 
-###Resource: freebox\_dhcp\_lease
+###Class: freebox::lan
+This class is used to modify the Freebox Server network configuration.
+
+####`ip`
+Freebox Server IPv4 address.
+
+####`server_name`
+Freebox Server name.
+
+####`name_dns`
+Freebox Server DNS name.
+
+####`name_mdns`
+Freebox Server mDNS name.
+
+####`name_netbios`
+Freebox Server netbios name.
+
+####`type`
+The valid LAN modes are:
+`router`: The Freebox acts as a network router.
+`bridge`: The Freebox acts as a network bridge.
+NOTE: in bridge mode, most of Freebox services are disabled. It is recommended to use the router mode.
+
+###Resource: freebox_dhcp_lease
 This resource is used to declare a DHCP static lease.
 
 ####`ip`
@@ -156,3 +182,33 @@ an optional comment.
 
 ####`hostname`
 hostname matching the mac address.
+
+###Resource: freebox_lan_host
+This resource is used to modify host information.
+
+####`primary_name`
+Host primary name.
+
+####`host_type`
+When possible, the Freebox will try to guess the `host_type`, but you can manually override this to the correct value.
+Possible values are:
+source            | Description
+------------------|-------------------
+workstation       | Workstation
+laptop            | Laptop
+smartphone        | Smartphone
+tablet            | Tablet
+printer           | Printer
+vg_console        | Video game console
+television        | TV
+nas               | Nas
+ip_camera         | IP Camera
+ip_phone          | IP Phone
+freebox_player    | Freebox Player
+freebox_hd        | Freebox Server
+networking_device | Networking device
+multimedia_device | Multimedia device
+other             | Other
+
+####`persistent`
+If true the host is always shown even if it has not been active since the Freebox startup.
