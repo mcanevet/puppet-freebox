@@ -1,6 +1,8 @@
 Freebox OS module
 =================
 
+[![Build Status](https://travis-ci.org/mcanevet/puppet-freebox.png?branch=master)](https://travis-ci.org/mcanevet/puppet-freebox)
+
 WARNING: Work In Progress.
 
 Overview
