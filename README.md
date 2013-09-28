@@ -18,11 +18,16 @@ First, you have to obtain an app_token. This procedure can only be initiated fro
 ```ruby
 require 'freebox_api'
 
-puts FreeboxApi::Freebox.app_token('fr.freebox.puppet', 'Freebox Puppet', '0.0.1', 'mypc.example.com')
+FreeboxApi::Freebox.new.authorize({
+  :app_id      => 'fr.freebox.puppet',
+  :app_name    => 'Freebox Puppet',
+  :app_version => '0.0.1',
+  :device_name => 'puppetmaster.example.com')
+})['app_token']
 ```
 or
 ```
-curl -X POST http://mafreebox.free.fr/api/v1/login/authorize -H "Content-Type: application/json" -d '{"app_id" : "fr.freebox.puppet", "app_name" : "Freebox Puppet", "app_version" : "0.0.1", "mypc.example.com"}'
+curl -X POST http://mafreebox.free.fr/api/v1/login/authorize -H "Content-Type: application/json" -d '{"app_id" : "fr.freebox.puppet", "app_name" : "Freebox Puppet", "app_version" : "0.0.1", "puppetmaster.example.com"}'
 ```
 
 Then got to your Freebox OS interface (http://mafreebox.free.fr) to allow `Freebox Puppet` application to update Freebox settings (in "Paramètres de la Freebox" > "Gestion des accès" > "Applications").
@@ -67,9 +72,9 @@ Classes:
 
 Resources:
 
-* [freebox_conf](#resource-freeboxconf)
-* [freebox_dhcp_lease](#resource-freeboxdhcplease)
-* [freebox_lan_host] (#resource-freeboxlanhost)
+* [freebox\_conf](#resource-freeboxconf)
+* [freebox\_static\_lease](#resource-freeboxstaticlease)
+* [freebox\_lan\_host] (#resource-freeboxlanhost)
 
 ###Class: freebox
 This class is used to set the main settings for this module, to be used by the other classes and defined resources and configure connection the internet connection to the Freebox.
@@ -170,7 +175,7 @@ The valid LAN modes are:
 `bridge`: The Freebox acts as a network bridge.
 NOTE: in bridge mode, most of Freebox services are disabled. It is recommended to use the router mode.
 
-###Resource: freebox_dhcp_lease
+###Resource: freebox\_static\_lease
 This resource is used to declare a DHCP static lease.
 
 ####`ip`
@@ -182,10 +187,7 @@ Host mac address. Defaults to `name`.
 ####`comment`
 an optional comment.
 
-####`hostname`
-hostname matching the mac address.
-
-###Resource: freebox_lan_host
+###Resource: freebox\_lan\_host
 This resource is used to modify host information.
 
 ####`primary_name`
@@ -194,6 +196,7 @@ Host primary name.
 ####`host_type`
 When possible, the Freebox will try to guess the `host_type`, but you can manually override this to the correct value.
 Possible values are:
+
 source            | Description
 ------------------|-------------------
 workstation       | Workstation
