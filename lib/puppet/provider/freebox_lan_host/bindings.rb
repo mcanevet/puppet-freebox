@@ -13,23 +13,24 @@ Puppet::Type.type(:freebox_lan_host).provide(:bindings) do
     section['app_token']
   end
 
+  def self.lan_hosts
+    mySession = FreeboxApi::Session.new(
+      {:app_id => 'fr.freebox.puppet', :app_token => app_token},
+      FreeboxApi::Freebox.new)
+
+    FreeboxApi::Resources::LanHost.new(mySession)
+  end
+
   def self.instances
-    mafreebox = FreeboxApi::Freebox.new(
-      self.app_token,
-      'fr.freebox.puppet',
-      'Puppet Freebox',
-      '0.1.0',
-      'foo'
-    )
-    mafreebox.lan_hosts.collect do |lan_host|
+    lan_hosts.index.collect { |lan_host|
       new(
-        :name         => lan_host.id,
+        :name         => lan_host['id'],
         :ensure       => :present,
-        :primary_name => lan_host.primary_name,
-        :host_type    => lan_host.host_type,
-        :persistent   => lan_host.persistent,
+        :primary_name => lan_host['primary_name'],
+        :host_type    => lan_host['host_type'],
+        :persistent   => lan_host['persistent'],
       )
-    end
+    }
   end
 
   def self.prefetch(resources)
@@ -46,15 +47,19 @@ Puppet::Type.type(:freebox_lan_host).provide(:bindings) do
   end
 
   def create
-    puts 'Not implemented yet'
+    myHash = {}
+    myHash[:id] = resource[:name]
+    (myHash[:primary_name] = resource[:primary_name]) if resource[:primary_name]
+    (myHash[:host_type] = resource[:host_type]) if resource[:host_type]
+    (myHash[:persistent] = resource[:persistent]) if resource[:persistent]
+    self.class.lan_hosts.create(myHash)
+
+    @property_hash[:ensure] = :present
   end
 
   def destroy
-    puts 'Not implemented yet'
-  end
-
-  def flush
-    puts 'Not implemented yet'
+    self.class.lan_hosts.destroy(resource[:name])
+    @property_hash.clear
   end
 
   def initialize(value={})
@@ -62,28 +67,20 @@ Puppet::Type.type(:freebox_lan_host).provide(:bindings) do
     @property_flush = {}
   end
 
-  def primary_name
-    @property_hash[:primary_name]
+  def flush
+    myHash = {}
+    if @property_flush
+      (myHash[:primary_name] = resource[:primary_name]) if @property_flush[:primary_name]
+      (myHash[:host_type] = resource[:host_type]) if @property_flush[:host_type]
+      (myHash[:persistent] = resource[:persistent]) if @property_flush[:persistent]
+      unless myHash.empty?
+        myHash[:id] = resource[:name]
+        self.class.lan_hosts.update(myHash)
+      end
+    end
+    @property_hash = resource.to_hash
   end
 
-  def primary_name=(value)
-    @property_flush[:primary_name] = value
-  end
-
-  def host_type
-    @property_hash[:host_type]
-  end
-
-  def host_type=(value)
-    @property_flush[:host_type] = value
-  end
-
-  def persistent
-    @property_hash[:persistent]
-  end
-
-  def persistent=(value)
-    @property_flush[:persistent] = value
-  end
+  mk_resource_methods
 
 end
