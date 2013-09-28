@@ -1,5 +1,5 @@
-Puppet::Type.newtype(:freebox_dhcp_lease) do
-  desc "Type to manage Freebox DHCP leases"
+Puppet::Type.newtype(:freebox_static_lease) do
+  desc "Type to manage Freebox DHCP static leases"
 
   ensurable
 
@@ -19,13 +19,6 @@ Puppet::Type.newtype(:freebox_dhcp_lease) do
 
   newproperty(:comment) do
     desc "an optional comment"
-  end
-
-  newproperty(:hostname) do
-    desc "hostname matching the mac address"
-    munge do |value|
-      value.downcase
-    end
   end
 
   newproperty(:ip) do

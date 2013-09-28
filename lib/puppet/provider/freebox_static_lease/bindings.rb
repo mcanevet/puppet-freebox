@@ -5,7 +5,7 @@ rescue
   Puppet.warning "You need freebox_api gem to manage Freebox OS with this provider."
 end
 
-Puppet::Type.type(:freebox_lan_host).provide(:bindings) do
+Puppet::Type.type(:freebox_static_lease).provide(:bindings) do
 
   def self.app_token
     ini = IniFile.load('/etc/puppet/freebox.conf')
@@ -13,30 +13,30 @@ Puppet::Type.type(:freebox_lan_host).provide(:bindings) do
     section['app_token']
   end
 
-  def self.lan_hosts
+  def self.static_leases
     mySession = FreeboxApi::Session.new(
       {:app_id => 'fr.freebox.puppet', :app_token => app_token},
       FreeboxApi::Freebox.new)
 
-    FreeboxApi::Resources::LanHost.new(mySession)
+    FreeboxApi::Resources::StaticLease.new(mySession)
   end
 
   def self.instances
-    lan_hosts.index.collect do |lan_host|
+    static_leases.index.collect do |static_lease|
       new(
-        :name         => lan_host['id'],
-        :ensure       => :present,
-        :primary_name => lan_host['primary_name'],
-        :host_type    => lan_host['host_type'],
-        :persistent   => lan_host['persistent'],
+        :name     => static_lease['id'],
+        :ensure   => :present,
+        :mac      => static_lease['mac'],
+        :comment  => static_lease['comment'],
+        :ip       => static_lease['ip']
       )
     end
   end
 
   def self.prefetch(resources)
-    lan_hosts = instances
+    static_leases = instances
     resources.keys.each do |name|
-      if provider = lan_hosts.find{ |lan_host| lan_host.name == name }
+      if provider = static_leases.find{ |static_lease| static_lease.name == name }
         resources[name].provider = provider
       end
     end
@@ -49,16 +49,16 @@ Puppet::Type.type(:freebox_lan_host).provide(:bindings) do
   def create
     myHash = {}
     myHash[:id] = resource[:name]
-    (myHash[:primary_name] = resource[:primary_name]) if resource[:primary_name]
-    (myHash[:host_type] = resource[:host_type]) if resource[:host_type]
-    (myHash[:persistent] = resource[:persistent]) if resource[:persistent]
-    self.class.lan_hosts.create(myHash)
+    (myHash[:mac] = resource[:mac]) if resource[:mac]
+    (myHash[:comment] = resource[:comment]) if resource[:comment]
+    (myHash[:ip] = resource[:ip]) if resource[:ip]
+    self.class.static_leases.create(myHash)
 
     @property_hash[:ensure] = :present
   end
 
   def destroy
-    self.class.lan_hosts.destroy(resource[:name])
+    self.class.static_leases.destroy(resource[:name])
     @property_hash.clear
   end
 
@@ -70,12 +70,12 @@ Puppet::Type.type(:freebox_lan_host).provide(:bindings) do
   def flush
     myHash = {}
     if @property_flush
-      (myHash[:primary_name] = resource[:primary_name]) if @property_flush[:primary_name]
-      (myHash[:host_type] = resource[:host_type]) if @property_flush[:host_type]
-      (myHash[:persistent] = resource[:persistent]) if @property_flush[:persistent]
+      (myHash[:mac] = resource[:mac]) if @property_flush[:mac]
+      (myHash[:comment] = resource[:comment]) if @property_flush[:comment]
+      (myHash[:ip] = resource[:ip]) if @property_flush[:ip]
       unless myHash.empty?
         myHash[:id] = resource[:name]
-        self.class.lan_hosts.update(myHash)
+	self.class.static_leases.update(myHash)
       end
     end
     @property_hash = resource.to_hash
