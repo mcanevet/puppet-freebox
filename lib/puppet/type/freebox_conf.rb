@@ -1,16 +1,12 @@
 Puppet::Type.newtype(:freebox_conf) do
-  desc "Type to manage freebox configuration"
+  desc 'Type to manage freebox configuration'
 
   newparam(:name) do
-    desc "The API url"
+    desc 'The Service to configure'
   end
 
-  newparam(:session_token) do
-    desc "The session_token to use"
-  end
-
-  newproperty(:request) do
-    desc "The request to use for the API"
+  newproperty(:params) do
+    desc 'The params of the service'
     isrequired
 
     munge do |value|

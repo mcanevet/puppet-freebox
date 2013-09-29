@@ -11,10 +11,8 @@ class freebox::dhcp(
   $sticky_assign    = undef,
   $leases           = {},
 ) {
-  freebox_conf { '/api/v1/dhcp/config/':
-    session_token => freebox_session_token(
-      $::freebox::app_id, $::freebox::app_token),
-    request       => {
+  freebox_conf { 'dhcp':
+    params => {
       always_broadcast => $always_broadcast,
       dns              => $dns,
       enabled          => $enabled,
@@ -25,5 +23,5 @@ class freebox::dhcp(
       sticky_assign    => $sticky_assign,
     }
   }
-  create_resources(freebox_dhcp_lease, $leases)
+  create_resources(freebox_static_lease, $leases)
 }
