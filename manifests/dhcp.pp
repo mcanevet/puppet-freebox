@@ -9,7 +9,7 @@ class freebox::dhcp(
   $ip_range_start   = undef,
   $netmask          = undef,
   $sticky_assign    = undef,
-  $leases           = {},
+  $static_leases    = {},
 ) {
   freebox_conf { 'dhcp':
     params => {
@@ -23,5 +23,5 @@ class freebox::dhcp(
       sticky_assign    => $sticky_assign,
     }
   }
-  create_resources(freebox_static_lease, $leases)
+  create_resources(freebox_static_lease, $static_leases)
 }
