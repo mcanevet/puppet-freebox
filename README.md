@@ -38,7 +38,7 @@ Usage
 **Create a node file for every freebox to manage**
 
 ```puppet
-node 'mafreebox.free.fr {
+node 'mafreebox.free.fr' {
   
   class { 'freebox':
     app_token => 'dyNYgfK0Ya6FWGqq83sBHa7TwzWo+pg4fDFUJHShcjVYzTfaRrZzm93p7OTAfH/0',
