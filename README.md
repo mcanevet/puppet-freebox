@@ -35,31 +35,33 @@ Then got to your Freebox OS interface (http://mafreebox.free.fr) to allow `Freeb
 Usage
 -----
 
-**Define app_token for all classes:**
-
-Just declare the `freebox` class with `app_token` parameter:
+**Create a node file for every freebox to manage**
 
 ```puppet
-class { 'freebox':
-  app_token           => 'dyNYgfK0Ya6FWGqq83sBHa7TwzWo+pg4fDFUJHShcjVYzTfaRrZzm93p7OTAfH/0',
-  ping                => true,
-  remote_access       => true,
-  remote_access_port  => 42,
-  wol                 => true,
-  adblock             => true,
-  allow_token_request => false,
+node 'mafreebox.free.fr {
+  
+  class { 'freebox':
+    app_token => 'dyNYgfK0Ya6FWGqq83sBHa7TwzWo+pg4fDFUJHShcjVYzTfaRrZzm93p7OTAfH/0',
+  }
+
 }
 ```
 
-**Configure DHCP**
+**Run puppet**
 
-```puppet
-class { 'freebox::dhcp':
-  enabled        => true,
-  ip_range_start => '192.168.0.10',
-  ip_range_end   => '192.168.0.50',
-}
+With a puppetmaster
+
 ```
+FACTER_operatingsystem=FreeboxOS puppet agent -t --certname=mafreebox.free.fr
+```
+
+or in standalone
+
+```
+FACTER_operatingsystem=FreeboxOS puppet apply --certname=mafreebox.free.fr
+```
+
+Overriding operatingsystem fact is required so that other facts are overridden.
 
 Reference
 ---------
