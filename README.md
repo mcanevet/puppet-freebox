@@ -52,16 +52,20 @@ node 'mafreebox.free.fr' {
 With a puppetmaster
 
 ```
-FACTER_operatingsystem=FreeboxOS puppet agent -t --certname=mafreebox.free.fr
+export FACTER_operatingsystem=FreeboxOS
+export FACTER_clientcert=mafreebox.free.fr
+puppet agent -t --certname=mafreebox.free.fr
 ```
 
 or in standalone
 
 ```
-FACTER_operatingsystem=FreeboxOS puppet apply --certname=mafreebox.free.fr
+export FACTER_operatingsystem=FreeboxOS
+export FACTER_clientcert=mafreebox.free.fr
+puppet apply --certname=mafreebox.free.fr
 ```
 
-Overriding operatingsystem fact is required so that other facts are overridden.
+Overriding operatingsystem and setting clientcert fact is required so that other facts are overridden (like ipaddress).
 
 Reference
 ---------
