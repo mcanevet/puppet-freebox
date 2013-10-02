@@ -6,8 +6,18 @@ class freebox::lan(
   $name_dns     = 'freebox-server',
   $name_mdns    = 'Freebox-Server',
   $name_netbios = 'Freebox_Server',
-  $type         = 'router',
+  $mode         = 'router',
   $hosts        = {},
 ) {
+  freebox_conf { 'lan':
+    params => {
+      ip           => $ip,
+      name         => $server_name,
+      name_dns     => $name_dns,
+      name_mdns    => $name_mdns,
+      name_netbios => $name_netbios,
+      mode         => $mode,
+    }
+  }
   create_resources(freebox_lan_host, $hosts)
 }
