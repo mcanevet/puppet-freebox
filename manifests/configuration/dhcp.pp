@@ -1,6 +1,8 @@
 # == Class: freebox::dhcp
 #
-class freebox::dhcp(
+# See README.md for more details.
+#
+class freebox::configuration::dhcp(
   $always_broadcast = undef,
   $dns              = undef,
   $enabled          = undef,

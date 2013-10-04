@@ -35,10 +35,18 @@ Then got to your Freebox OS interface (http://mafreebox.free.fr) to allow `Freeb
 Usage
 -----
 
-**Create a node file for every freebox to manage**
+**Create a node definition for every freebox to manage**
 
 ```puppet
 node 'mafreebox.free.fr' {
+  
+  class { 'freebox':
+    app_token => 'dyNYgfK0Ya6FWGqq83sBHa7TwzWo+pg4fDFUJHShcjVYzTfaRrZzm93p7OTAfH/0',
+  }
+
+}
+
+node 'mafreebox.example.com' {
   
   class { 'freebox':
     app_token => 'dyNYgfK0Ya6FWGqq83sBHa7TwzWo+pg4fDFUJHShcjVYzTfaRrZzm93p7OTAfH/0',
@@ -53,16 +61,24 @@ With a puppetmaster
 
 ```
 export FACTER_operatingsystem=FreeboxOS
+
 export FACTER_clientcert=mafreebox.free.fr
-puppet agent -t --certname=mafreebox.free.fr
+puppet agent -t --certname=$FACTER_clientcert
+
+export FACTER_clientcert=mafreebox.example.com
+puppet agent -t --certname=$FACTER_clientcert
 ```
 
 or in standalone
 
 ```
 export FACTER_operatingsystem=FreeboxOS
+
 export FACTER_clientcert=mafreebox.free.fr
-puppet apply --certname=mafreebox.free.fr
+puppet apply --certname=$FACTER_clientcert
+
+export FACTER_clientcert=mafreebox.example.com
+puppet apply --certname=$FACTER_clientcert
 ```
 
 Overriding operatingsystem and setting clientcert fact is required so that other facts are overridden (like ipaddress).
@@ -73,8 +89,9 @@ Reference
 Classes:
 
 * [freebox](#class-freebox)
-* [freebox::dhcp](#class-freeboxdhcp)
-* [freebox::lan] (#class-freeboxlan)
+* [freebox::configuration::connection](#class-freeboxconfigurationconnection)
+* [freebox::configuration::lan] (#class-freeboxlan)
+* [freebox::configuration::dhcp](#class-freeboxdhcp)
 
 Resources:
 
@@ -83,7 +100,7 @@ Resources:
 * [freebox\_lan\_host] (#resource-freeboxlanhost)
 
 ###Class: freebox
-This class is used to set the main settings for this module, to be used by the other classes and defined resources and configure connection the internet connection to the Freebox.
+This class is used to set the main settings for this module, to be used by the other classes and defined resources.
 
 For example, if you want to override the default `app_id` you could use the following combination:
 
@@ -109,6 +126,9 @@ Override the app version.
 ####`device_name`
 Override the device name. Defaults to `$::hostname`.
 
+###Class: freebox::configuration::connection
+This class is used to configure the connection to the freebox.
+
 ####`ping`
 Should the Freebox respond to external ping requests.
 
@@ -127,7 +147,31 @@ Is ads blocking feature enabled.
 ####`allow_token_request`
 If false, user has disabled new token request. New apps can’t request a new token. Apps that already have a token are still allowed.
 
-###Class: freebox::dhcp
+###Class: freebox::configuration::lan
+This class is used to modify the Freebox Server network configuration.
+
+####`ip`
+Freebox Server IPv4 address.
+
+####`server_name`
+Freebox Server name.
+
+####`name_dns`
+Freebox Server DNS name.
+
+####`name_mdns`
+Freebox Server mDNS name.
+
+####`name_netbios`
+Freebox Server netbios name.
+
+####`type`
+The valid LAN modes are:
+`router`: The Freebox acts as a network router.
+`bridge`: The Freebox acts as a network bridge.
+NOTE: in bridge mode, most of Freebox services are disabled. It is recommended to use the router mode.
+
+###Class: freebox::configuration::dhcp
 This class is used to configure the DHCP server of the Freebox Server.
 
 ####`always_broadcast`
@@ -156,30 +200,6 @@ Always assign the same IP to a given host.
 
 ####`leases`
 Hash containing leases to declare.
-
-###Class: freebox::lan
-This class is used to modify the Freebox Server network configuration.
-
-####`ip`
-Freebox Server IPv4 address.
-
-####`server_name`
-Freebox Server name.
-
-####`name_dns`
-Freebox Server DNS name.
-
-####`name_mdns`
-Freebox Server mDNS name.
-
-####`name_netbios`
-Freebox Server netbios name.
-
-####`type`
-The valid LAN modes are:
-`router`: The Freebox acts as a network router.
-`bridge`: The Freebox acts as a network bridge.
-NOTE: in bridge mode, most of Freebox services are disabled. It is recommended to use the router mode.
 
 ###Resource: freebox\_static\_lease
 This resource is used to declare a DHCP static lease.

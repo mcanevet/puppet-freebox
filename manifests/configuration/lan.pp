@@ -1,6 +1,8 @@
-# == Class:: freebox::lan
+# == Class:: freebox::configuration::lan
 #
-class freebox::lan(
+# See README.md for more details.
+#
+class freebox::configuration::lan(
   $ip           = '192.168.0.254',
   $server_name  = 'Freebox Server',
   $name_dns     = 'freebox-server',

@@ -1,3 +1,7 @@
+# == Class: freebox::configuration::connection
+#
+# See README.md for more details.
+#
 class freebox::configuration::connection(
   $ping                = undef,
   $remote_access       = undef,
