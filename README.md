@@ -90,7 +90,7 @@ Classes:
 
 * [freebox](#class-freebox)
 * [freebox::configuration::connection](#class-freeboxconfigurationconnection)
-* [freebox::configuration::connection::ipv6](#class-freeboxconfigurationconnection)
+* [freebox::configuration::connection::ipv6](#class-freeboxconfigurationconnectionipv6)
 * [freebox::configuration::lan] (#class-freeboxlan)
 * [freebox::configuration::dhcp](#class-freeboxdhcp)
 
