@@ -10,14 +10,18 @@ class freebox::configuration::connection(
   $adblock             = undef,
   $allow_token_request = undef,
 ) {
-  freebox_configuration_connection { $::clientcert:
-    params => {
-      ping                => $ping,
-      remote_access       => $remote_access,
-      remote_access_port  => $remote_access_port,
-      wol                 => $wol,
-      adblock             => $adblock,
-      allow_token_request => $allow_token_request,
-    },
+  freebox_connection_conf {
+    'ping':
+      value => $ping;
+    'remote_access':
+      value => $remote_access;
+    'remote_access_port':
+      value => $remote_access_port;
+    'wol':
+      value => $wol;
+    'adblock':
+      value => $adblock;
+    'allow_token_request':
+      value => $allow_token_request;
   }
 }
