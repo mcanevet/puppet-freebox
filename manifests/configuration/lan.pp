@@ -3,23 +3,27 @@
 # See README.md for more details.
 #
 class freebox::configuration::lan(
-  $ip           = '192.168.0.254',
-  $server_name  = 'Freebox Server',
-  $name_dns     = 'freebox-server',
-  $name_mdns    = 'Freebox-Server',
-  $name_netbios = 'Freebox_Server',
-  $mode         = 'router',
+  $ip           = undef,
+  $server_name  = undef,
+  $name_dns     = undef,
+  $name_mdns    = undef,
+  $name_netbios = undef,
+  $mode         = undef,
   $hosts        = {},
 ) {
-  freebox_conf { 'lan':
-    params => {
-      ip           => $ip,
-      name         => $server_name,
-      name_dns     => $name_dns,
-      name_mdns    => $name_mdns,
-      name_netbios => $name_netbios,
-      mode         => $mode,
-    }
+  freebox_lan_conf {
+    'ip':
+      value => $ip;
+    'server_name':
+      value => $server_name;
+    'name_dns':
+      value => $name_dns;
+    'name_mdns':
+      value => $name_mdns;
+    'name_netbios':
+      value => $name_netbios;
+    'mode':
+      value => $mode;
   }
   create_resources(freebox_lan_host, $hosts)
 }
