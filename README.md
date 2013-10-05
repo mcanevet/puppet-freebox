@@ -90,12 +90,12 @@ Classes:
 
 * [freebox](#class-freebox)
 * [freebox::configuration::connection](#class-freeboxconfigurationconnection)
+* [freebox::configuration::connection::ipv6](#class-freeboxconfigurationconnection)
 * [freebox::configuration::lan] (#class-freeboxlan)
 * [freebox::configuration::dhcp](#class-freeboxdhcp)
 
 Resources:
 
-* [freebox\_conf](#resource-freeboxconf)
 * [freebox\_static\_lease](#resource-freeboxstaticlease)
 * [freebox\_lan\_host] (#resource-freeboxlanhost)
 
@@ -127,7 +127,7 @@ Override the app version.
 Override the device name. Defaults to `$::hostname`.
 
 ###Class: freebox::configuration::connection
-This class is used to configure the connection to the freebox.
+This class is used to configure the Freebox IPv4 connection.
 
 ####`ping`
 Should the Freebox respond to external ping requests.
@@ -146,6 +146,15 @@ Is ads blocking feature enabled.
 
 ####`allow_token_request`
 If false, user has disabled new token request. New apps can’t request a new token. Apps that already have a token are still allowed.
+
+###Class: freebox::configuration::connection::ipv6
+This class is used to configure the Freebox IPv6 connection.
+
+####`enabled`
+is IPv6 enabled.
+
+####`delegations`
+list of IPv6 delegations.
 
 ###Class: freebox::configuration::lan
 This class is used to modify the Freebox Server network configuration.
