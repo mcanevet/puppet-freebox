@@ -69,7 +69,7 @@ export FACTER_clientcert=mafreebox.example.com
 puppet agent -t --certname=$FACTER_clientcert
 ```
 
-or in standalone
+or in standalone mode
 
 ```
 export FACTER_operatingsystem=FreeboxOS

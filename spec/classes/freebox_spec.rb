@@ -18,12 +18,6 @@ describe 'freebox', :type => 'class' do
       .with_app_id('fr.freebox.puppet')\
       .with_app_name('Freebox Puppet')\
       .with_app_version('0.0.1')\
-      .with_ping(nil)\
-      .with_remote_access(nil)\
-      .with_remote_access_port(nil)\
-      .with_wol(nil)\
-      .with_adblock(nil)\
-      .with_allow_token_request(nil)
     }
     it { should contain_file('/etc/puppet/freebox.conf')\
       .with_owner('root')\
