@@ -24,6 +24,18 @@ describe 'freebox', :type => 'class' do
       .with_group('root')\
       .with_mode('0400')
     }
+    it { should contain_ini_setting('set app_id')\
+      .with_setting('app_id')\
+      .with_value('fr.freebox.puppet')
+    }
+    it { should contain_ini_setting('set app_token')\
+      .with_setting('app_token')\
+      .with_value('dyNYgfK0Ya6FWGqq83sBHa7TwzWo+pg4fDFUJHShcjVYzTfaRrZzm93p7OTAfH/0')
+    }
+    it { should contain_ini_setting('set port')\
+      .with_setting('port')\
+      .with_value('80')
+    }
   end
 
 end
