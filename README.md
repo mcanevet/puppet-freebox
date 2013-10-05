@@ -55,6 +55,15 @@ node 'mafreebox.example.com' {
 }
 ```
 
+Then include the class of the module you want to manage:
+
+```puppet
+include ::freebox::configuration::connection
+include ::freebox::configuration::connection::ipv6
+include ::freebox::configuration::lan
+...
+```
+
 **Run puppet**
 
 With a puppetmaster
@@ -91,11 +100,12 @@ Classes:
 * [freebox](#class-freebox)
 * [freebox::configuration::connection](#class-freeboxconfigurationconnection)
 * [freebox::configuration::connection::ipv6](#class-freeboxconfigurationconnectionipv6)
-* [freebox::configuration::lan] (#class-freeboxlan)
-* [freebox::configuration::dhcp](#class-freeboxdhcp)
+* [freebox::configuration::lan] (#class-freeboxconfigurationlan)
+* [freebox::configuration::dhcp](#class-freeboxconfigurationdhcp)
 
 Resources:
 
+* [freebox\_ddns\_client](#resource-freeboxddnsclient)
 * [freebox\_static\_lease](#resource-freeboxstaticlease)
 * [freebox\_lan\_host] (#resource-freeboxlanhost)
 
@@ -146,6 +156,9 @@ Is ads blocking feature enabled.
 
 ####`allow_token_request`
 If false, user has disabled new token request. New apps can’t request a new token. Apps that already have a token are still allowed.
+
+####`ddns_client`
+A hash containing DynDNS client configuration.
 
 ###Class: freebox::configuration::connection::ipv6
 This class is used to configure the Freebox IPv6 connection.
@@ -209,6 +222,27 @@ Always assign the same IP to a given host.
 
 ####`leases`
 Hash containing leases to declare.
+
+###Resource: freebox\_ddns\_client
+This resource is used to configure a DynDNS client.
+
+####`name`
+The name of the dynamic DNS provider. Right now the supported dynamic dns providers are:
+* ovh
+* dyndns
+* noip
+
+####`enabled`
+Is this provider enabled.
+
+####`hostname`
+dns name to use to register.
+
+####`password`
+password to use to register.
+
+####`user`
+username to use to register.
 
 ###Resource: freebox\_static\_lease
 This resource is used to declare a DHCP static lease.

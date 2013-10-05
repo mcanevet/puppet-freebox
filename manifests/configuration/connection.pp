@@ -9,6 +9,7 @@ class freebox::configuration::connection(
   $wol                 = undef,
   $adblock             = undef,
   $allow_token_request = undef,
+  $ddns_clients        = {},
 ) {
   freebox_connection_conf {
     'ping':
@@ -24,4 +25,5 @@ class freebox::configuration::connection(
     'allow_token_request':
       value => $allow_token_request;
   }
+  create_resources(freebox_ddns_client, $ddns_clients)
 }

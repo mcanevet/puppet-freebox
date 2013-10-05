@@ -1,10 +1,10 @@
 Puppet::Type.newtype(:freebox_lan_host) do
-  desc "Type to manage Freebox LAN hosts"
+  desc 'Type to manage Freebox LAN hosts'
 
   ensurable
 
   newparam(:name) do
-    desc "Host id (unique on this interface)"
+    desc 'Host id (unique on this interface)'
   end
 
   newproperty(:primary_name) do
