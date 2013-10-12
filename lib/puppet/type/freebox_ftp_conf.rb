@@ -1,16 +1,16 @@
-Puppet::Type.newtype(:freebox_dhcp_conf) do
-  desc 'Type to manage Freebox DHCP Server'
+Puppet::Type.newtype(:freebox_ftp_conf) do
+  desc 'Type to manage Freebox FTP Server'
 
   newparam(:name) do
-    desc 'The Freebox DHCP parameter to manage.'
-    newvalues(:enabled, :sticky_assign, :ip_range_start, :ip_range_end, :always_broadcast, :dns)
+    desc 'The Freebox FTP parameter to manage.'
+    newvalues(:enabled, :allow_anonymous, :allow_anonymous_write, :password)
   end
 
   newproperty(:value) do
     desc 'The value to set for this parameter.'
     munge do |value|
       case resource[:name]
-      when :enabled, :sticky_assign, :always_broadcast
+      when :enabled, :allow_anonymous, :allow_anonymous_write
         case value
         when true, :true, 'true', 'yes', 'on'
           :true

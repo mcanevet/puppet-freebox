@@ -102,6 +102,7 @@ Classes:
 * [freebox::configuration::connection::ipv6](#class-freeboxconfigurationconnectionipv6)
 * [freebox::configuration::lan] (#class-freeboxconfigurationlan)
 * [freebox::configuration::dhcp](#class-freeboxconfigurationdhcp)
+* [freebox::configuration::ftp](#class-freeboxconfigurationftp)
 
 Resources:
 
@@ -222,6 +223,21 @@ Always assign the same IP to a given host.
 
 ####`leases`
 Hash containing leases to declare.
+
+###Class: freebox::configuration::ftp
+This class is used to configure the FTP server of the Freebox Server.
+
+####`enabled`
+is the FTP server enabled.
+
+####`allow_anonymous`
+can anonymous user log in.
+
+####`allow_anonymous_write`
+can anonymous user write data.
+
+####`password`
+user password.
 
 ###Resource: freebox\_ddns\_client
 This resource is used to configure a DynDNS client.
