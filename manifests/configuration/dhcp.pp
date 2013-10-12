@@ -3,27 +3,27 @@
 # See README.md for more details.
 #
 class freebox::configuration::dhcp(
+  $enabled          = undef,
+  $sticky_assign    = undef,
+  $ip_range_start   = undef,
+  $ip_range_end     = undef,
   $always_broadcast = undef,
   $dns              = undef,
-  $enabled          = undef,
-  $gateway          = undef,
-  $ip_range_end     = undef,
-  $ip_range_start   = undef,
-  $netmask          = undef,
-  $sticky_assign    = undef,
   $static_leases    = {},
 ) {
-  freebox_conf { 'dhcp':
-    params => {
-      always_broadcast => $always_broadcast,
-      dns              => $dns,
-      enabled          => $enabled,
-      gateway          => $gateway,
-      ip_range_end     => $ip_range_end,
-      ip_range_start   => $ip_range_start,
-      netmask          => $netmask,
-      sticky_assign    => $sticky_assign,
-    }
+  freebox_dhcp_conf {
+    'enabled':
+      value => $enabled;
+    'sticky_assign':
+      value => $sticky_assign;
+    'ip_range_start':
+      value => $ip_range_start;
+    'ip_range_end':
+      value => $ip_range_end;
+    'always_broadcast':
+      value => $always_broadcast;
+    'dns':
+      value => $dns;
   }
   create_resources(freebox_static_lease, $static_leases)
 }

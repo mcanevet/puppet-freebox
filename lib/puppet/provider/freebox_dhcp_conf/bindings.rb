@@ -5,7 +5,7 @@ rescue
   Puppet.warning 'You need freebox_api gem to manage Freebox OS with this provider.'
 end
 
-Puppet::Type.type(:freebox_connection_conf).provide(:bindings) do
+Puppet::Type.type(:freebox_dhcp_conf).provide(:bindings) do
 
   def self.clientcert
     Facter['clientcert'] == nil ? 'mafreebox.free.fr' : Facter['clientcert'].value
@@ -38,8 +38,8 @@ Puppet::Type.type(:freebox_connection_conf).provide(:bindings) do
   end
 
   def self.instances
-    FreeboxApi::Configuration::Connection.getConfig(session)
-    .select { |k,_| %w[ping remote_access remote_access_port wol adblock allow_token_request].include? k }
+    FreeboxApi::Configuration::Dhcp.getConfig(session)
+    .select { |k,_| %w[enabled sticky_assign ip_range_start ip_range_end always_broadcast dns].include? k }
     .collect { |k, v|
       v = :true if v == true
       v = :false if v == false
@@ -65,8 +65,9 @@ Puppet::Type.type(:freebox_connection_conf).provide(:bindings) do
     val = v
     val = true if v == :true
     val = false if v == :false
-    FreeboxApi::Configuration::Connection.updateConfig(self.class.session, {@resource[:name] => val})
+    FreeboxApi::Configuration::Dhcp.updateConfig(self.class.session, {@resource[:name] => val})
     @property_hash[:value] = v
   end
 
 end
+
