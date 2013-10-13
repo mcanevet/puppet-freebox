@@ -1,4 +1,4 @@
-# == Class: freebox::dhcp
+# == Class: freebox::configuration::dhcp
 #
 # See README.md for more details.
 #

@@ -100,9 +100,10 @@ Classes:
 * [freebox](#class-freebox)
 * [freebox::configuration::connection](#class-freeboxconfigurationconnection)
 * [freebox::configuration::connection::ipv6](#class-freeboxconfigurationconnectionipv6)
-* [freebox::configuration::lan] (#class-freeboxconfigurationlan)
+* [freebox::configuration::lan](#class-freeboxconfigurationlan)
 * [freebox::configuration::dhcp](#class-freeboxconfigurationdhcp)
 * [freebox::configuration::ftp](#class-freeboxconfigurationftp)
+* [freebox::configuration::nat::dmz](#class-freeboxconfigurationnatdmz)
 
 Resources:
 
@@ -238,6 +239,15 @@ can anonymous user write data.
 
 ####`password`
 user password.
+
+###Class: freebox::configuration::nat::dmz
+This class is used to configure the DMZ of the Freebox Server.
+
+####`ip`
+dmz host IP.
+
+####`enabled`
+is dmz enabled.
 
 ###Resource: freebox\_ddns\_client
 This resource is used to configure a DynDNS client.

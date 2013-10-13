@@ -1,4 +1,4 @@
-# == Class: freebox::ftp
+# == Class: freebox::configuration::ftp
 #
 # See README.md for more details.
 #
