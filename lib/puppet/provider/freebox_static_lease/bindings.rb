@@ -2,27 +2,43 @@ begin
   require 'freebox_api'
   require 'inifile'
 rescue
-  Puppet.warning "You need freebox_api gem to manage Freebox OS with this provider."
+  Puppet.warning 'You need freebox_api gem to manage Freebox OS with this provider.'
 end
 
 Puppet::Type.type(:freebox_static_lease).provide(:bindings) do
 
-  def self.app_token
-    ini = IniFile.load('/etc/puppet/freebox.conf')
-    section = ini['mafreebox.free.fr']
-    section['app_token']
+  def self.clientcert
+    Facter['clientcert'] == nil ? 'mafreebox.free.fr' : Facter['clientcert'].value
   end
 
-  def self.static_leases
-    mySession = FreeboxApi::Session.new(
-      {:app_id => 'fr.freebox.puppet', :app_token => app_token},
-      FreeboxApi::Freebox.new)
+  def self.inisection
+    IniFile.load('/etc/puppet/freebox.conf')[clientcert]
+  end
 
-    FreeboxApi::Resources::StaticLease.new(mySession)
+  def self.app_id
+    inisection['app_id']
+  end
+
+  def self.app_token
+    inisection['app_token']
+  end
+
+  def self.port
+    inisection['port']
+  end
+
+  def self.session
+    FreeboxApi::Session.new(
+      {:app_id => 'fr.freebox.puppet', :app_token => app_token},
+      FreeboxApi::Freebox.new({
+        :freebox_ip   => clientcert,
+        :freebox_port => port,
+      })
+    )
   end
 
   def self.instances
-    static_leases.index.collect do |static_lease|
+    FreeboxApi::Configuration::Dhcp.static_leases(session).collect { |static_lease|
       new(
         :name     => static_lease['id'],
         :ensure   => :present,
@@ -30,7 +46,7 @@ Puppet::Type.type(:freebox_static_lease).provide(:bindings) do
         :comment  => static_lease['comment'],
         :ip       => static_lease['ip']
       )
-    end
+    }
   end
 
   def self.prefetch(resources)
@@ -40,6 +56,13 @@ Puppet::Type.type(:freebox_static_lease).provide(:bindings) do
         resources[name].provider = provider
       end
     end
+  end
+
+  mk_resource_methods
+
+  def initialize(value={})
+    super(value)
+    @property_flush = {}
   end
 
   def exists?
@@ -52,19 +75,14 @@ Puppet::Type.type(:freebox_static_lease).provide(:bindings) do
     (myHash[:mac] = resource[:mac]) if resource[:mac]
     (myHash[:comment] = resource[:comment]) if resource[:comment]
     (myHash[:ip] = resource[:ip]) if resource[:ip]
-    self.class.static_leases.create(myHash)
+    FreeboxApi::Configuration::Dhcp::StaticLease.create(self.class.session, myHash)
 
     @property_hash[:ensure] = :present
   end
 
   def destroy
-    self.class.static_leases.destroy(resource[:name])
+    FreeboxApi::Configuration::Dhcp::StaticLease.delete(self.class.session, resource[:name])
     @property_hash.clear
-  end
-
-  def initialize(value={})
-    super(value)
-    @property_flush = {}
   end
 
   def flush
@@ -75,12 +93,10 @@ Puppet::Type.type(:freebox_static_lease).provide(:bindings) do
       (myHash[:ip] = resource[:ip]) if @property_flush[:ip]
       unless myHash.empty?
         myHash[:id] = resource[:name]
-	self.class.static_leases.update(myHash)
+        FreeboxApi::Configuration::Dhcp::StaticLease.update(self.class.session, myHash)
       end
     end
     @property_hash = resource.to_hash
   end
-
-  mk_resource_methods
 
 end

@@ -64,6 +64,12 @@ include ::freebox::configuration::lan
 ...
 ```
 
+I you want to remove all unmanaged resources for a certain type of resource you can do it like this:
+
+```puppet
+resources { 'freebox_static_lease': purge => true, }
+```
+
 **Run puppet**
 
 With a puppetmaster

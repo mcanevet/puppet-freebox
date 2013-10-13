@@ -25,5 +25,5 @@ class freebox::configuration::dhcp(
     'dns':
       value => $dns;
   }
-  #  create_resources(freebox_static_lease, $static_leases)
+  create_resources(freebox_static_lease, $static_leases)
 }

@@ -92,7 +92,6 @@ Puppet::Type.type(:freebox_ddns_client).provide(:bindings) do
       (myHash[:hostname] = resource['hostname']) if @property_flush[:hostname]
       (myHash[:password] = resource['password']) if @property_flush[:password]
       (myHash[:user] = resource['user']) if @property_flush[:user]
-      puts "myHash=#{myHash}"
       unless myHash.empty?
         FreeboxApi::Configuration::Connection::DDNS.updateConfig(
           self.class.session, resource[:name], myHash)
