@@ -2,27 +2,43 @@ begin
   require 'freebox_api'
   require 'inifile'
 rescue
-  Puppet.warning "You need freebox_api gem to manage Freebox OS with this provider."
+  Puppet.warning 'You need freebox_api gem to manage Freebox OS with this provider.'
 end
 
 Puppet::Type.type(:freebox_lan_host).provide(:bindings) do
 
-  def self.app_token
-    ini = IniFile.load('/etc/puppet/freebox.conf')
-    section = ini['mafreebox.free.fr']
-    section['app_token']
+  def self.clientcert
+    Facter['clientcert'] == nil ? 'mafreebox.free.fr' : Facter['clientcert'].value
   end
 
-  def self.lan_hosts
-    mySession = FreeboxApi::Session.new(
-      {:app_id => 'fr.freebox.puppet', :app_token => app_token},
-      FreeboxApi::Freebox.new)
+  def self.inisection
+    IniFile.load('/etc/puppet/freebox.conf')[clientcert]
+  end
 
-    FreeboxApi::Resources::LanHost.new(mySession)
+  def self.app_id
+    inisection['app_id']
+  end
+
+  def self.app_token
+    inisection['app_token']
+  end
+
+  def self.port
+    inisection['port']
+  end
+
+  def self.session
+    FreeboxApi::Session.new(
+      {:app_id => 'fr.freebox.puppet', :app_token => app_token},
+      FreeboxApi::Freebox.new({
+        :freebox_ip   => clientcert,
+        :freebox_port => port,
+      })
+    )
   end
 
   def self.instances
-    lan_hosts.index.collect do |lan_host|
+    FreeboxApi::Configuration::Lan::Browser::Interface.getLanHosts(session, 'pub').collect do |lan_host|
       new(
         :name         => lan_host['id'],
         :ensure       => :present,
@@ -42,29 +58,15 @@ Puppet::Type.type(:freebox_lan_host).provide(:bindings) do
     end
   end
 
-  def exists?
-    @property_hash[:ensure] == :present
-  end
-
-  def create
-    myHash = {}
-    myHash[:id] = resource[:name]
-    (myHash[:primary_name] = resource[:primary_name]) if resource[:primary_name]
-    (myHash[:host_type] = resource[:host_type]) if resource[:host_type]
-    (myHash[:persistent] = resource[:persistent]) if resource[:persistent]
-    self.class.lan_hosts.create(myHash)
-
-    @property_hash[:ensure] = :present
-  end
-
-  def destroy
-    self.class.lan_hosts.destroy(resource[:name])
-    @property_hash.clear
-  end
+  mk_resource_methods
 
   def initialize(value={})
     super(value)
     @property_flush = {}
+  end
+
+  def exists?
+    @property_hash[:ensure] == :present
   end
 
   def flush
@@ -75,12 +77,10 @@ Puppet::Type.type(:freebox_lan_host).provide(:bindings) do
       (myHash[:persistent] = resource[:persistent]) if @property_flush[:persistent]
       unless myHash.empty?
         myHash[:id] = resource[:name]
-        self.class.lan_hosts.update(myHash)
+        FreeboxApi::Configuration::Lan::Browser::LanHost.update(self.class.session, 'pub', resource[:name], myHash)
       end
     end
     @property_hash = resource.to_hash
   end
-
-  mk_resource_methods
 
 end
